@@ -4,11 +4,8 @@ from app.database.db import Base
 
 class User(Base):
     __tablename__ = "users"
+    
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, index=True, nullable=False)
     password = Column(String, nullable=False)
-
-class Admin(Base):
-    __tablename__ = "admins"
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
-    user = relationship("User")
+    tasks = relationship("Task", back_populates="creator", cascade="all, delete-orphan")

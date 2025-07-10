@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models.user import User, Admin
+from app.models.user import User
+from app.models.task import Task
 from app.schemas.user import UserCreate
 
 def get_user_by_id(db: Session, user_id: int) -> User | None:
@@ -18,6 +19,3 @@ def create_user(db: Session, user: UserCreate, hashed_password: str) -> User:
     except:
         db.rollback()
         raise
-
-def is_user_an_admin(db: Session, user_id: int) -> bool:
-    return db.query(Admin).filter(Admin.user_id == user_id).first() is not None

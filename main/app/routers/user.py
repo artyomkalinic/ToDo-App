@@ -3,9 +3,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from app.database.db import get_db_connection
-from app.models.user import User, Admin
+from app.models.user import User
+from app.models.task import Task
 from app.schemas.user import UserCreate
 from app.services.user import register_user, login_user
+
 router = APIRouter()
 
 @router.get("/main")
@@ -37,7 +39,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     try:
         user_id, access_token = login_user(form_data.username, form_data.password, db)
         response = RedirectResponse(url=f"/api/user/{user_id}", status_code=303)
-        response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True)
+        response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True, samesite="Lax", path="/", )
         return response
     except HTTPException as e:
         raise e

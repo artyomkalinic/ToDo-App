@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS admins (
-    user_id INTEGER PRIMARY KEY,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS tasks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    creator_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
