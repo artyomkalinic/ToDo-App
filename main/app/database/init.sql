@@ -10,3 +10,12 @@ CREATE TABLE IF NOT EXISTS tasks (
     description TEXT,
     creator_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS permissions (
+    id SERIAL PRIMARY KEY,
+    task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    allowed_edit BOOLEAN DEFAULT FALSE,
+    allowed_delete BOOLEAN DEFAULT FALSE,
+    UNIQUE (task_id, user_id)
+);

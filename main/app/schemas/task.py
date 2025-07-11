@@ -7,3 +7,6 @@ class TaskCreate(BaseModel):
 class TaskResponse(BaseModel):
     id: int
     creator_id: int
+
+class TaskDelete(BaseModel):
+    id: int

@@ -28,9 +28,9 @@ def get_users(user_id: int, db: Session = Depends(get_db_connection)):
 def register(user: UserCreate, db: Session = Depends(get_db_connection)):
     try:
         register_user(user, db)
-        return RedirectResponse(url="/api/main", status_code=303)
+        return RedirectResponse(url="/user/main", status_code=303)
     except Exception as e:
-        print("Registration error:", e) 
+        # print("Registration error:", e) 
         raise HTTPException(status_code=500, detail="Registration failed")
     
 
@@ -38,7 +38,7 @@ def register(user: UserCreate, db: Session = Depends(get_db_connection)):
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db_connection)):
     try:
         user_id, access_token = login_user(form_data.username, form_data.password, db)
-        response = RedirectResponse(url=f"/api/user/{user_id}", status_code=303)
+        response = RedirectResponse(url=f"/user/user/{user_id}", status_code=303)
         response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True, samesite="Lax", path="/", )
         return response
     except HTTPException as e:
