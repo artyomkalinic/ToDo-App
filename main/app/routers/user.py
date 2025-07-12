@@ -3,10 +3,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from app.database.db import get_db_connection
+from app.services.user import register_user, login_user
 from app.models.user import User
 from app.models.task import Task
 from app.schemas.user import UserCreate
-from app.services.user import register_user, login_user
+
 
 router = APIRouter()
 
@@ -21,6 +22,7 @@ def get_users(user_id: int, db: Session = Depends(get_db_connection)):
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    
     return {"id": user.id, "name": user.username}
 
 
@@ -30,7 +32,6 @@ def register(user: UserCreate, db: Session = Depends(get_db_connection)):
         register_user(user, db)
         return RedirectResponse(url="/user/main", status_code=303)
     except Exception as e:
-        # print("Registration error:", e) 
         raise HTTPException(status_code=500, detail="Registration failed")
     
 

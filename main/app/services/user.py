@@ -5,6 +5,10 @@ from app.repositories.auth import get_hashed_password, verify_password, verify_t
 from app.repositories.user import create_user, get_user_by_username, get_user_by_id
 
 def register_user(user: UserCreate, db: Session):
+    
+    if get_user_by_username(db, user.username) is not None:
+        raise HTTPException(status_code=403, detail="Username is already in use")
+    
     hashed_password = get_hashed_password(user.password)
     create_user(db, user, hashed_password)
 

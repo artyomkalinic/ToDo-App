@@ -4,7 +4,6 @@ from app.database.db import get_db_connection
 from app.repositories.auth import get_current_user
 from app.services.permission import give_permission_task
 from app.models.user import User
-from app.models.permission import Permission
 from app.schemas.user import UserId
 from app.schemas.permission import PermissionCreate
 
@@ -19,6 +18,6 @@ def give_permission(task_data: PermissionCreate,
                     
 ):
     try:
-        return give_permission_task(task_data, to_user, db, current_user, )
+        return give_permission_task(task_data, to_user, db, current_user)
     except HTTPException as e:
         raise e

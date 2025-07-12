@@ -18,7 +18,7 @@ def give_permission_task_db(task_data: PermissionCreate, to_user: User, db: Sess
                                                        Permission.user_id == to_user.id).first()
     
     if is_permission_exists:
-        raise HTTPException(detail="Permission already exists", status_code=403)
+        raise HTTPException(status_code=403, detail="Permission already exists")
     
     permission = Permission(task_id=task_data.task_id, 
                             user_id=to_user.id,
