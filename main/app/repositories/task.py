@@ -6,6 +6,7 @@ from app.models.user import User
 from app.models.task import Task
 from app.models.permission import Permission
 
+
 async def get_task_by_id(task_data, db: AsyncSession):
     task_query = select(Task).filter(Task.id == task_data.id)
     task_result = await db.execute(task_query)

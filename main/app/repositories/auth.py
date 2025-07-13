@@ -19,6 +19,7 @@ ACCESS_TOKEN_EXPIRED_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], bcrypt__rounds=12, deprecated="auto")
 
+
 async def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRED_MINUTES)
@@ -27,16 +28,18 @@ async def create_access_token(data: dict):
 
     return jwt.encode(to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
 
+
 async def verify_token(token: str):
     try:
         payload = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    
     except JWTError:
         return None
 
+
 async def verify_password(entered_password: str, hashed_password: str):
     return pwd_context.verify(entered_password, hashed_password)
+
 
 async def get_hashed_password(entered_password: str):
     return pwd_context.hash(entered_password)

@@ -16,7 +16,6 @@ async def create(task_data: TaskCreate, db: AsyncSession = Depends(get_db_connec
     try:
         return await create_task(task_data, db, current_user)
     except HTTPException as e:
-        print(e)
         raise e
     
 

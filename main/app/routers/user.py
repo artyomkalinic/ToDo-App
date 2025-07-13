@@ -17,7 +17,6 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db_connectio
         return {"message": "Registration successful", "user_id": user.id}
     
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=500, detail="Registration failed")
     
 
