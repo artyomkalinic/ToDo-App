@@ -5,7 +5,8 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 
 from fastapi import Depends, HTTPException, Request
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from app.database.db import get_db_connection
 from app.models.user import User
 from app.models.task import Task
@@ -18,7 +19,7 @@ ACCESS_TOKEN_EXPIRED_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], bcrypt__rounds=12, deprecated="auto")
 
-def create_access_token(data: dict):
+async def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRED_MINUTES)
 
@@ -26,7 +27,7 @@ def create_access_token(data: dict):
 
     return jwt.encode(to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
 
-def verify_token(token: str):
+async def verify_token(token: str):
     try:
         payload = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
         return payload
@@ -34,14 +35,14 @@ def verify_token(token: str):
     except JWTError:
         return None
 
-def verify_password(entered_password: str, hashed_password: str):
+async def verify_password(entered_password: str, hashed_password: str):
     return pwd_context.verify(entered_password, hashed_password)
 
-def get_hashed_password(entered_password: str):
+async def get_hashed_password(entered_password: str):
     return pwd_context.hash(entered_password)
 
 
-def get_current_user(request: Request, db: Session = Depends(get_db_connection)):
+async def get_current_user(request: Request, db: AsyncSession = Depends(get_db_connection)):
     token = request.cookies.get("access_token")
    
     if token is None:
@@ -52,12 +53,14 @@ def get_current_user(request: Request, db: Session = Depends(get_db_connection))
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("id")
+        user_id = int(payload.get("id"))
         
         if user_id is None:
             raise HTTPException(status_code=403, detail="Invalid token")
 
-        user = db.query(User).filter(User.id == user_id).first()
+        query = select(User).filter(User.id == user_id)
+        result = await db.execute(query)
+        user = result.scalars().first()
         
         if user is None:
             raise HTTPException(status_code=403, detail="User not found")
