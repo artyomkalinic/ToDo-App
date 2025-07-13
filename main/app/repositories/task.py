@@ -1,12 +1,12 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas.task import TaskCreate, TaskId, TaskEdit
-from app.schemas.permission import PermissionCreate
+from app.schemas.task import TaskResponse
 from app.models.user import User
 from app.models.task import Task
 from app.models.permission import Permission
 
-def create_task_db(task_data: TaskCreate, db: Session, user: User) -> Task:
+def create_task_db(task_data: TaskCreate, db: Session, user: User) -> TaskResponse:
 
     task = Task(name=task_data.name, description=task_data.description, status=False, creator_id=user.id)
 
@@ -24,8 +24,8 @@ def create_task_db(task_data: TaskCreate, db: Session, user: User) -> Task:
     db.commit()
     db.refresh(permission)
 
-
-    return task
+    task_response = TaskResponse(id=task.id, creator_id=task.creator_id)
+    return task_response
 
 def delete_task_db(task_data: TaskId, db: Session, user: User):
     task = db.query(Task).filter(Task.id == task_data.id).first()

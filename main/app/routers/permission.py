@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database.db import get_db_connection
 from app.repositories.auth import get_current_user
-from app.services.permission import give_permission_task
+from app.services.permission import give_permission_task, take_permission_task
 from app.models.user import User
 from app.schemas.user import UserId
-from app.schemas.permission import PermissionCreate
+from app.schemas.permission import PermissionCreate, PermissionTaskUserId
 
 router = APIRouter()
 
@@ -19,5 +19,16 @@ def give_permission(task_data: PermissionCreate,
 ):
     try:
         return give_permission_task(task_data, to_user, db, current_user)
+    except HTTPException as e:
+        raise e
+
+@router.delete("/take")
+def take_permission(task_data: PermissionTaskUserId,
+                    from_user: UserId,
+                    db: Session = Depends(get_db_connection), 
+                    current_user: User = Depends(get_current_user)
+):
+    try:
+        return take_permission_task(task_data, from_user, db, current_user)
     except HTTPException as e:
         raise e

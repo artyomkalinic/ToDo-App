@@ -16,6 +16,7 @@ def create_user(db: Session, user: UserCreate, hashed_password: str) -> User:
     try:
         db.commit()
         db.refresh(new_user)
+        return new_user
     except:
         db.rollback()
         raise

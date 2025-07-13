@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from app.schemas.permission import PermissionCreate
+from app.schemas.permission import PermissionCreate, PermissionTaskUserId
 from app.models.user import User
 from app.models.task import Task
 from app.models.permission import Permission
@@ -29,3 +29,24 @@ def give_permission_task_db(task_data: PermissionCreate, to_user: User, db: Sess
     db.refresh(permission)
 
     return {"message": "Permission is given"}
+
+def take_permission_task_db(task_data: PermissionTaskUserId, from_user: User, db: Session, current_user: User):
+    task = db.query(Task).filter(Task.id == task_data.task_id).first()
+
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    if task.creator_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Only the creator can take permission")
+
+    permission = db.query(Permission).filter(Permission.task_id == task.id, 
+                                            Permission.user_id == from_user.id).first()
+    
+    if not permission:
+        raise HTTPException(status_code=404, detail="Permission doesn't exist")
+    
+    
+    db.delete(permission)
+    db.commit()
+
+    return {"message": "Permission is taken"}

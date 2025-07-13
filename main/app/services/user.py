@@ -10,7 +10,7 @@ def register_user(user: UserCreate, db: Session):
         raise HTTPException(status_code=403, detail="Username is already in use")
     
     hashed_password = get_hashed_password(user.password)
-    create_user(db, user, hashed_password)
+    return create_user(db, user, hashed_password)
 
 def login_user(username: str, password: str, db: Session):
     user = get_user_by_username(db, username)

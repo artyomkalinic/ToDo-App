@@ -5,3 +5,7 @@ class PermissionCreate(BaseModel):
     user_id: int
     allowed_edit: bool = False
     allowed_delete: bool = False
+
+class PermissionTaskUserId(BaseModel):
+    task_id: int
+    user_id: int
