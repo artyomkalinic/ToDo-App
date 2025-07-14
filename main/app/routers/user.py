@@ -17,7 +17,8 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db_connectio
         return {"message": "Registration successful", "user_id": user.id}
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Registration failed")
+        raise e
+        
     
 
 @router.post("/login", status_code=200)
@@ -31,6 +32,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         return response
 
     except HTTPException as e:
+        print(e)
         raise e
     
     except Exception:

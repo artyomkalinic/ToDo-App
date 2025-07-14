@@ -7,3 +7,6 @@ asyncpg
 python-jose
 passlib[bcrypt]
 python-multipart
+pytest
+pytest-asyncio
+httpx
