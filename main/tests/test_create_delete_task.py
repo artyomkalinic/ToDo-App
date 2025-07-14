@@ -6,12 +6,12 @@ def test_create_and_delete_task(client):
 
     cookies = response.cookies
     response = client.post("/task/create", json={"name": "Test Task", "description": "desc"}, cookies=cookies)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 
     task_id = response.json()["id"]
     response = client.request(method="DELETE", url="/task/delete", json={"id": task_id}, cookies=cookies)
-    assert response.status_code == 200
+    assert response.status_code == 204
 
 
     response = client.request(method="DELETE", url="/task/delete", json={"id": 10}, cookies=cookies)

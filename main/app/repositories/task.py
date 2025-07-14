@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.schemas.task import TaskCreate
@@ -7,7 +8,7 @@ from app.models.task import Task
 from app.models.permission import Permission
 
 
-async def get_task_by_id(task_data, db: AsyncSession):
+async def get_task_by_id(task_data, db: AsyncSession) -> Task:
     task_query = select(Task).filter(Task.id == task_data.id)
     task_result = await db.execute(task_query)
     task = task_result.scalars().first()
@@ -50,7 +51,7 @@ async def edit_task_db(task, db) -> Task:
 
     return task
 
-async def get_current_tasks_db(db: AsyncSession, current_user: User):
+async def get_current_tasks_db(db: AsyncSession, current_user: User) -> List[Task]:
     task_query = select(Task).filter(Task.creator_id == current_user.id)
     task_result = await db.execute(task_query)
     tasks = task_result.scalars().all()

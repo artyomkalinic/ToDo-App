@@ -11,7 +11,7 @@ from app.schemas.permission import PermissionCreate, PermissionTaskUserId
 router = APIRouter()
 
 
-@router.post("/give")
+@router.post("/give", status_code=201)
 async def give_permission(task_data: PermissionCreate,
                     to_user: UserId, 
                     db: AsyncSession = Depends(get_db_connection), 
@@ -24,7 +24,7 @@ async def give_permission(task_data: PermissionCreate,
         raise e
 
 
-@router.delete("/take")
+@router.delete("/take", status_code=204)
 async def take_permission(task_data: PermissionTaskUserId,
                     from_user: UserId,
                     db: AsyncSession = Depends(get_db_connection), 

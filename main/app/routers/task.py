@@ -11,7 +11,7 @@ from app.schemas.task import TaskCreate, TaskId, TaskEdit
 router = APIRouter()
 
 
-@router.post("/create")
+@router.post("/create", status_code=201)
 async def create(task_data: TaskCreate, db: AsyncSession = Depends(get_db_connection), current_user: User = Depends(get_current_user)):
     try:
         return await create_task(task_data, db, current_user)
@@ -19,7 +19,7 @@ async def create(task_data: TaskCreate, db: AsyncSession = Depends(get_db_connec
         raise e
     
 
-@router.delete("/delete")
+@router.delete("/delete", status_code=204)
 async def delete(task_data: TaskId, db: AsyncSession = Depends(get_db_connection), current_user: User = Depends(get_current_user)):
     try:
        return await delete_task(task_data, db, current_user)
@@ -27,7 +27,7 @@ async def delete(task_data: TaskId, db: AsyncSession = Depends(get_db_connection
         raise e
 
 
-@router.patch("/edit")
+@router.patch("/edit", status_code=200)
 async def edit(task_data: TaskId, task_to_edit: TaskEdit, db: AsyncSession = Depends(get_db_connection), current_user: User = Depends(get_current_user)):
     try:
         return await edit_task(task_data, task_to_edit, db, current_user)
@@ -35,7 +35,7 @@ async def edit(task_data: TaskId, task_to_edit: TaskEdit, db: AsyncSession = Dep
         raise e
     
 
-@router.get("/get_current")
+@router.get("/get_current", status_code=201)
 async def get_current(db: AsyncSession = Depends(get_db_connection), current_user: User = Depends(get_current_user)):
     try:
         return await get_current_tasks(db, current_user)
