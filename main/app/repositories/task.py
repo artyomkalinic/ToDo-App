@@ -49,3 +49,10 @@ async def edit_task_db(task, db) -> Task:
     await db.refresh(task)
 
     return task
+
+async def get_current_tasks_db(db: AsyncSession, current_user: User):
+    task_query = select(Task).filter(Task.creator_id == current_user.id)
+    task_result = await db.execute(task_query)
+    tasks = task_result.scalars().all()
+
+    return tasks

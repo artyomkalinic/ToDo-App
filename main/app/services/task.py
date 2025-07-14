@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.task import TaskCreate, TaskId, TaskEdit
 from app.models.user import User
 from app.models.task import Task
-from app.repositories.task import create_task_db, delete_task_db, edit_task_db, get_task_by_id
+from app.repositories.task import create_task_db, delete_task_db, edit_task_db, get_task_by_id, get_current_tasks_db
 from app.repositories.permission import get_allowed_to_edit_perm
 
 async def create_task(task_data: TaskCreate, db: AsyncSession, current_user: User):
@@ -40,3 +40,6 @@ async def edit_task(task_data: TaskId, task_to_edit: TaskEdit, db: AsyncSession,
         task.status = task_to_edit.status
 
     return await edit_task_db(task, db)
+
+async def get_current_tasks(db: AsyncSession, current_user: User):
+    return await get_current_tasks_db(db, current_user)

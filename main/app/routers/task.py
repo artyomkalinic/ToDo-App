@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db import get_db_connection
 from app.repositories.auth import get_current_user
-from app.services.task import create_task, delete_task, edit_task
+from app.services.task import create_task, delete_task, edit_task, get_current_tasks
 from app.models.user import User
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskId, TaskEdit
@@ -31,5 +31,13 @@ async def delete(task_data: TaskId, db: AsyncSession = Depends(get_db_connection
 async def edit(task_data: TaskId, task_to_edit: TaskEdit, db: AsyncSession = Depends(get_db_connection), current_user: User = Depends(get_current_user)):
     try:
         return await edit_task(task_data, task_to_edit, db, current_user)
+    except HTTPException as e:
+        raise e
+    
+
+@router.get("/get_current")
+async def get_current(db: AsyncSession = Depends(get_db_connection), current_user: User = Depends(get_current_user)):
+    try:
+        return await get_current_tasks(db, current_user)
     except HTTPException as e:
         raise e
