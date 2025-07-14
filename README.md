@@ -22,3 +22,4 @@ ToDo App API. Python project.
 
 Проект поднимается по команде docker-compose up --build из папки main.
 Протестировать работу api можно при помощи Swagger: http://0.0.0.0:8000/docs
+Запустить тесты можно из корневой папки по команде PYTHONPATH=main pytest
