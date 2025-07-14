@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import pytest
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -6,7 +8,9 @@ from app.database.db import Base, get_db_connection
 from app.main import app
 from fastapi.testclient import TestClient
 
-SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./test.db" 
+load_dotenv()
+
+SQLALCHEMY_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL, future=True, echo=True)
 TestingSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
